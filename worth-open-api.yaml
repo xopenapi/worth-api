@@ -1,0 +1,92 @@
+swagger: "2.0"
+info:
+  description: "worth open api"
+  version: 1.0.0
+  title: 设备开放API
+  license:
+    name: Apache-2.0
+    url: "https://www.apache.org/licenses/LICENSE-2.0.html"
+host: iot.worthcloud.net
+basePath: /
+tags:
+  - name: oauth
+    description: oauth
+schemes:
+  - https
+paths:
+  /v1/authenticator/{access_key}/{secret_key}:
+    get:
+      tags:
+        - authenticator
+      summary: 生成token
+      description: 生成token
+      operationId: genToken
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: access_key
+          type: string
+          description: access_key
+          required: true
+        - in: path
+          name: secret_key
+          type: string
+          description: secret_key
+          required: true
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GenTokenResponse"
+  /v1/devices/send_action:
+    post:
+      tags:
+        - device
+      summary: 发送指令
+      description: 发送指令
+      operationId: send_action
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/ActionReq"
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: "#/definitions/APIResponse"
+definitions:
+  ActionReq:
+    type: object
+    required:
+      - device_id
+      - data
+    properties:
+      device_id:
+        type: string
+      data:
+        type: string
+      charset:
+        type: string
+  GenTokenResponse:
+    allOf:
+      - $ref: "#/definitions/APIResponse"
+      - type: object
+        properties:
+          data:
+            type: object
+  APIResponse:
+    title: APIResponse
+    description: ""
+    properties:
+      message:
+        type: string
+      code:
+        type: string
